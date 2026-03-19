@@ -3,7 +3,8 @@ import axios from "axios";
 import Login from "./Login";
 import Admin from "./Admin";
 
-const API = "http://localhost:5000";
+// 🔥 CHANGE HERE
+const API = "https://ai-news-final-1.onrender.com";
 
 export default function App() {
   const [news, setNews] = useState([]);
