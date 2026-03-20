@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Login from "./Login";
-import Register from "./Register";
 
-const API = "https://your-render-url.onrender.com";
+const API = "https://ai-news-final.onrender.com"; //  YOUR BACKEND
 
 export default function App() {
   const [news, setNews] = useState([]);
   const [logged, setLogged] = useState(false);
-  const [showReg, setShowReg] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadNews();
-
     if (localStorage.getItem("token")) {
       setLogged(true);
     }
+
+    loadNews();
   }, []);
 
-  const loadNews = () => {
-    axios.get(API + "/news").then(res => setNews(res.data));
+  const loadNews = async () => {
+    try {
+      const res = await axios.get(API + "/news");
+      setNews(res.data);
+    } catch (err) {
+      console.log("API ERROR:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const like = async (id) => {
@@ -27,34 +33,22 @@ export default function App() {
     loadNews();
   };
 
-  const comment = async (id) => {
-    const text = prompt("Enter comment");
-    await axios.post(API + "/comment/" + id, {
-      text,
-      user: "user"
-    });
-    loadNews();
-  };
+  //  UI FIX
+  if (loading) return <h2>Loading...</h2>;
 
   return (
     <div>
-      {!logged && !showReg && (
-        <>
-          <Login setLogged={setLogged} />
-          <button onClick={() => setShowReg(true)}>Register</button>
-        </>
-      )}
+      {!logged && <Login setLogged={setLogged} />}
 
-      {showReg && <Register />}
+      <h1 style={{ color: "orange" }}> AI NEWS</h1>
 
-      <h1>🟧 AI NEWS</h1>
+      {news.length === 0 && <p>No news found</p>}
 
       {news.map((n, i) => (
         <div key={n._id} className="news">
           <b>{i + 1}. {n.title}</b>
           <p>{n.content}</p>
-          <button onClick={() => like(n._id)}>⬆ {n.likes}</button>
-          <button onClick={() => comment(n._id)}>💬 {n.comments.length}</button>
+          <button onClick={() => like(n._id)}> {n.likes}</button>
         </div>
       ))}
     </div>
