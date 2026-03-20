@@ -1,0 +1,17 @@
+body {
+  background: #111;
+  color: #ddd;
+  font-family: Arial;
+}
+
+.news {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+button {
+  background: orange;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
