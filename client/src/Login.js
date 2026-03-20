@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// 🔥 CHANGE HERE
 const API = "https://ai-news-final-1.onrender.com";
 
-export default function Login() {
+export default function Login({ setIsLogged }) {
 
   const login = async () => {
     try {
@@ -13,6 +12,10 @@ export default function Login() {
       });
 
       localStorage.setItem("token", res.data.token);
+
+      // 🔥 update UI
+      setIsLogged(true);
+
       alert("Login success ✅");
 
     } catch {

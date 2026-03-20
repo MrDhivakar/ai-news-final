@@ -3,14 +3,18 @@ import axios from "axios";
 import Login from "./Login";
 import Admin from "./Admin";
 
-// 🔥 CHANGE HERE
 const API = "https://ai-news-final-1.onrender.com";
 
 export default function App() {
   const [news, setNews] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
     axios.get(API + "/news").then(res => setNews(res.data));
+
+    // 🔥 check token
+    const token = localStorage.getItem("token");
+    if (token) setIsLogged(true);
   }, []);
 
   const like = (id) => {
@@ -21,7 +25,8 @@ export default function App() {
     <div>
       <h1>🔥 AI News</h1>
 
-      <Login />
+      {/* 🔥 login only if not logged */}
+      {!isLogged && <Login setIsLogged={setIsLogged} />}
 
       {news.map(n => (
         <div key={n._id}>
@@ -32,7 +37,8 @@ export default function App() {
             ❤️ {n.likes}
           </button>
 
-          <Admin id={n._id} />
+          {/* 🔥 admin only if logged */}
+          {isLogged && <Admin id={n._id} />}
         </div>
       ))}
     </div>
